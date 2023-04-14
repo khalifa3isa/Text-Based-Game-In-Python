@@ -264,4 +264,215 @@ def enter_room(room_file):
         player_inventory["armour"] = None
 
     update_gui()  # Update the graphical user interface or GUI to changes.
+    
+def shop():
+    shop_data = read_file("shop.txt")  
+    parsed_data = Parsing_room_data(shop_data)  
+
+    print("Welcome to the shop")  
+
+    while True:
+        print("Items available:")
+        # Loop through the available items and print them.
+        for key, value in parsed_data.items():
+            # If the item is a weapon print its details.
+            if key.startswith("weapon"):
+                name, damage, price = value.split(",")
+                print(f"{key}: {name}, Damage {damage}, Price {price}")
+            # If the item is a key then print its details.
+            elif key.startswith("key"):
+                code, price = value.split(",")
+                print(f"{key}: Code {code}, Price {price}")
+            # If the item is a HealingPad then print its details.
+            elif key == "5":
+                print(f"HealingPad: Health +50, Price 100")
+            # If the item is an armour print its details
+            elif key.startswith("armour"):
+                durability, price = value.split(",")
+                print(f"{key}: Durability {durability}, Price {price}")
+
+        # Print the available commands.
+        print("\nCommands: buy, sell, exit")
+        action = input(
+            "Choose an action: "
+        ).lower()  # Get the input if player wants to buy or sell or exit.
+
+        # If the player chooses to buy an item then
+        if action == "buy":
+            item = input(
+                "Enter the item key e.g. weapon1 you want to buy: "
+            ).lower()  # Get the item key from the player.
+            # If the item exists in the sho then.
+            if item in parsed_data:
+                item_data = parsed_data[item].split(
+                    ","
+                )  # Get the item data.
+
+                # If the item is a weapon
+                if item.startswith("weapon"):
+                    name, damage, price = item_data
+                    damage, price = int(damage), int(price)
+
+                    # If the player has enough money to buy the weapon
+                    if player["money"] >= price:
+                        player[
+                            "money"
+                        ] -= price  # Deduct the price from the players money.
+                        player_inventory["weapons"][name] = (
+                            damage,
+                            price,
+                        )  # Add the weapon to the player's inventory.
+                        print(
+                            f"You bought {name} for {price} money."
+                        )  # Inform the player about the purchase.
+                    else:
+                        # If the player doesn't have enough money then print a message.
+                        print(
+                            "Not enough money to buy this item win some battles and come back."
+                        )
+                # If the item is a key.
+                elif item.startswith("key"):
+                    code, price = map(
+                        int, item_data
+                    )  # Get the key's code and price.
+
+                    # If the player has enough money to buy the key.
+                    if player["money"] >= price:
+                        player[
+                            "money"
+                        ] -= price  # Deduct the price from the player's money.
+                        player_inventory["keys"].append(
+                            code
+                        )  # Add the key to the player's inventory.
+                        print(
+                            f"You bought a key with code {code} for {price} money."
+                        )  # Inform the player about the purchase.
+                    else:
+                        # If the player doesn't have enough money, print a message.
+                        print("Not enough money to buy this item.")
+                # If the item is a HealingPad.
+                elif item == "5":
+                    price = 100  # Set the price of the HealingPad.
+
+                    # If the player has enough money to buy the HealingPad.
+                    if player["money"] >= price:
+                        player[
+                            "money"
+                        ] -= price  # Deduct the price from the player's money.
+                        player[
+                            "health"
+                        ] += 50  # Increase the player's health by 50.
+                        print(
+                            "You bought a HealingPad for 100 money."
+                        )  # Inform the player about the purchase.
+                    else:
+                        # If the player doesn't have enough money, print a message.
+                        print("Not enough money to buy this item sorry -(")
+                # If the item is an armour.
+                elif item.startswith("armour"):
+                    durability, price = map(
+                        int, item_data
+                    )  # Get the armour's durability and price.
+
+                    # If the player has enough money to buy the armour.
+                    if player["money"] >= price:
+                        player[
+                            "money"
+                        ] -= price  # Deduct the price from the player's money.
+                        player_inventory["armour"] = (
+                            durability,
+                            price,
+                        )  # Add the armour to the player's inventory.
+                        print(
+                            f"You bought an armour with durability {durability} for {price} money."
+                        )  # Inform the player about the purchase.
+                    else:
+                        # If the player doesn't have enough money, print a message.
+                        print("Not enough money to buy this item.")
+            else:
+                # If the item key is invalid, print a message.
+                print("Invalid item key, try again.")
+
+        # If the player chooses to sell an item.
+        elif action == "sell":
+            item = input(
+                "Enter the item key e.g., weapon1 you want to sell: "
+            ).lower()  # Get the item key from the player.
+            success = False  # Initialize a flag for a successful sale.
+
+            # If the item is a weapon.
+            if item.startswith("weapon"):
+                for weapon, info in player_inventory["weapons"].items():
+                    # If the player has the weapon in their inventory.
+                    if parsed_data[item].startswith(weapon):
+                        player["money"] += info[
+                            1
+                        ]  # Add the weapon's price to the player's money.
+                        del player_inventory["weapons"][
+                            weapon
+                        ]  # Remove the weapon from the player's inventory.
+                        print(
+                            f"You sold {weapon} for {info[1]} money."
+                        )  # Inform the player about the sale.
+                        success = True  # Set the flag to true.
+                        break
+            # If the item is a key.
+            elif item.startswith("key"):
+                code, price = map(
+                    int, parsed_data[item].split(",")
+                )  # Get the key's code and price.
+
+            # If the player has the key in their inventory.
+            if code in player_inventory["keys"]:
+                player[
+                    "money"
+                ] += price  # Add the key's price to the player's money.
+                player_inventory["keys"].remove(
+                    code
+                )  # Remove the key from the player's inventory.
+                print(
+                    f"You sold a key with code {code} for {price} money."
+                )  # Inform the player about the sale.
+                success = True  # Set the flag to true.
+            # If the item is a HealingPad.
+            elif item == "5":
+                print(
+                    "You cannot sell HealingPads."
+                )  # Inform the player that HealingPads cannot be sold.
+            # If the item is an armour.
+            elif item.startswith("armour"):
+                durability, price = map(
+                    int, parsed_data[item].split(",")
+                )  # Get the armour's durability and price.
+
+                # If the player has the armour in their inventory.
+                if (
+                    player_inventory["armour"]
+                    and player_inventory["armour"][0] == durability
+                ):
+                    player[
+                        "money"
+                    ] += price  # Add the armour's price to the player's money.
+                    player_inventory[
+                        "armour"
+                    ] = None  # Remove the armour from the player's inventory.
+                    print(
+                        f"You sold an armour with durability {durability} for {price} money."
+                    )  # Inform the player about the sale.
+                success = True  # Set the flag to true.
+
+            if not success:
+                # If the sale was unsuccessful (invalid item key or the item is not in the player's inventory), print a message.
+                print(
+                    "Invalid item key or you don't have this item. try again."
+                )
+
+        # If the player chooses to exit the shop.
+        elif action == "exit":
+            break
+        else:
+            # If the player's action is invalid, print a message.
+            print("Invalid action try again")
+
+        update_gui()  # Update the game's user interface.
 
