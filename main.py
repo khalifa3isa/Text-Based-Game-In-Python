@@ -475,4 +475,80 @@ def shop():
             print("Invalid action try again")
 
         update_gui()  # Update the game's user interface.
+def update_gui():
+    # Update the players name, money, health, points displayed on the GUI and warning about has been lost when point below 0 .
+    player_name_label.config(text=f"Name: {player['name']}")
+    player_money_label.config(text=f"Money: {player['money']}")
+    player_health_label.config(text=f"Health: {player['health']}")
+    player_points_label.config(text=f"Points: {player['points']}")
+    warning_label.config(text=f"Points: {player['points']}")
+    message = (
+        f"Points: {player['points']}  Sorry-( you lost!, try again"
+        if player["points"] < 0
+        else f"Points: {player['points']}"
+    )
+    warning_label.config(text=message)
 
+
+def show_inventory():
+    # Display the player's inventory in a message box.
+    inventory_text = "Inventory:\n"
+    inventory_text += "Weapons:\n"
+    for weapon, info in player_inventory["weapons"].items():
+        inventory_text += f"{weapon}: Damage {info[0]}, Price {info[1]}\n"
+    inventory_text += "\nKeys:\n"
+    for key in player_inventory["keys"]:
+        inventory_text += f"Key Code: {key}\n"
+    if player_inventory["armour"]:
+        inventory_text += f"\nArmour: Durability {player_inventory['armour'][0]}, Price {player_inventory['armour'][1]}"
+    messagebox.showinfo("Inventory", inventory_text)
+
+
+
+
+# Creating a GUI using tkinter library
+MainWindow = tk.Tk()
+MainWindow.title("Text-based Adventure Game")
+# Create labels to display player info
+warning_label = tk.Label(MainWindow)
+warning_label.pack()
+player_name_label = tk.Label(MainWindow, text=f"Name: {player['name']}")
+player_name_label.pack()
+
+player_money_label = tk.Label(MainWindow, text=f"Money: {player['money']}")
+player_money_label.pack()
+
+player_health_label = tk.Label(MainWindow, text=f"Health: {player['health']}")
+player_health_label.pack()
+
+player_points_label = tk.Label(MainWindow, text=f"Points: {player['points']}")
+player_points_label.pack()
+# Create buttons to enter different rooms and visit the shop
+r1btn = tk.Button(
+    MainWindow, text="Enter Room 1", command=lambda: enter_room("Room1.txt")
+)
+r1btn.pack()
+
+r2btn = tk.Button(
+    MainWindow, text="Enter Room 2", command=lambda: enter_room("Room2.txt")
+)
+r2btn.pack()
+
+r3btn = tk.Button(
+    MainWindow, text="Enter Room 3", command=lambda: enter_room("Room3.txt")
+)
+r3btn.pack()
+
+r4btn = tk.Button(
+    MainWindow, text="Enter Room 4", command=lambda: enter_room("Room4.txt")
+)
+r4btn.pack()
+
+shopbtn = tk.Button(MainWindow, text="Visit Shop", command=shop)
+shopbtn.pack()
+
+# Create a button to show players inventory
+inve_btn = tk.Button(MainWindow, text="Show Inventory", command=show_inventory)
+inve_btn.pack()
+
+MainWindow.mainloop()  # Run the main window loop 
