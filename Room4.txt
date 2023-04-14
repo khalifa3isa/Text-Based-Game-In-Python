@@ -1,0 +1,7 @@
+City Name: Gulltown
+Enemy description: Khal Drogo,40,190
+Point description: 4
+Weapon description: pistol, 15, 80
+Money description: 100
+HealingPad description: 1
+Key description: 1, 350
