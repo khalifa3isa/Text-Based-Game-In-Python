@@ -1,0 +1,6 @@
+City Name: Oldtown
+Enemy description: John Sand,5,80
+Point description: 2
+Weapon description: shovel, 15, 80
+Money description: 50
+Treasure description: 0, 3
