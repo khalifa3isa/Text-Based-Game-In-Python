@@ -1,0 +1,6 @@
+City Name: Lannisport
+Enemy description: Rob Stark, 20, 100
+Point description: 3
+Weapon description: pistol, 15, 80
+Money description: 100
+HealingPad description: 1
