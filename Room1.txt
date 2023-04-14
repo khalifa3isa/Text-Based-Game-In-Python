@@ -1,0 +1,6 @@
+City Name: King's Landing
+Enemy description: Qyburn,70,10
+Point description: 5
+Weapon description: shotgun,35,200
+Money description: 250
+Treasure description: 1, 4
