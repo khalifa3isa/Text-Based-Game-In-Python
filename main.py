@@ -9,6 +9,9 @@ player = {
     "health": 100,
     "points": 0,
 }
+# Initializing the player inventory including weapons keys and armour.
+player_inventory = {"weapons": {}, "keys": [], "armour": None}
+
 # a function to read the contents of a file.
 def read_file(file_name):
     with open(file_name, "r") as f:  # Open the file for reading.
